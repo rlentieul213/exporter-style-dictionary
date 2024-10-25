@@ -1,0 +1,35 @@
+
+{[ let brand = ds.currentBrand() /]}
+{[ const allTokens = ds.allTokens(brand.id) /]}
+{[ const allGroups = ds.allTokenGroups(brand.id) /]}
+
+{[ const colorRootGroup = ds.tokenGroupTreeByType("Color", brand.id) /]}
+{[ const colorSdTree = generateStyleDictionaryTree(colorRootGroup, allTokens, allGroups) /]}
+
+{[ const measureRootGroup = ds.tokenGroupTreeByType("Measure", brand.id) /]}
+{[ const measureSdTree = generateStyleDictionaryTree(measureRootGroup, allTokens, allGroups) /]}
+
+{[ const borderRootGroup = ds.tokenGroupTreeByType("Border", brand.id) /]}
+{[ const borderSdTree = generateStyleDictionaryTree(borderRootGroup, allTokens, allGroups) /]}
+
+{[ const fontRootGroup = ds.tokenGroupTreeByType("Font", brand.id) /]}
+{[ const fontSdTree = generateStyleDictionaryTree(fontRootGroup, allTokens, allGroups) /]}
+
+{[ const gradientRootGroup = ds.tokenGroupTreeByType("Gradient", brand.id) /]}
+{[ const gradientSdTree = generateStyleDictionaryTree(gradientRootGroup, allTokens, allGroups) /]}
+
+{[ const radiusRootGroup = ds.tokenGroupTreeByType("Radius", brand.id) /]}
+{[ const radiusSdTree = generateStyleDictionaryTree(radiusRootGroup, allTokens, allGroups) /]}
+
+{[ const shadowRootGroup = ds.tokenGroupTreeByType("Shadow", brand.id) /]}
+{[ const shadowSdTree = generateStyleDictionaryTree(shadowRootGroup, allTokens, allGroups) /]}
+
+{[ const textRootGroup = ds.tokenGroupTreeByType("Text", brand.id) /]}
+{[ const textSdTree = generateStyleDictionaryTree(textRootGroup, allTokens, allGroups) /]}
+
+{[ const typographyRootGroup = ds.tokenGroupTreeByType("Typography", brand.id) /]}
+{[ const typographySdTree = generateStyleDictionaryTree(typographyRootGroup, allTokens, allGroups) /]}
+
+{[const sdTree = mergeTrees(colorSdTree, measureSdTree, fontSdTree, borderSdTree)/]}
+{{ objectToPrettyJson(sdTree) }}
+

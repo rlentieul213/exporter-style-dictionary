@@ -96,9 +96,15 @@
 // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 // MARK: - Blueprint functions
 /** Format object to pretty JSON */
-Pulsar.registerFunction("objectToPrettyJson", (object) => {
+Pulsar.registerFunction("objectToPrettyJson", (object) => {    
     return JSON.stringify(object, null, 2);
 });
+
+Pulsar.registerFunction("mergeTrees", (colorRootGroup, measureRootGroup, fontRootGroup, borderRootGroup, gradientRootGroup, radiusRootGroup, shadowRootGroup, textRootGroup, typoRootGroup) => {
+    console.log("mergeTrees: ");
+    return Object.assign({}, colorRootGroup, measureRootGroup, fontRootGroup, borderRootGroup, gradientRootGroup, radiusRootGroup, shadowRootGroup, textRootGroup, typoRootGroup)
+  })
+
 /** Generate style dictionary tree */
 Pulsar.registerFunction("generateStyleDictionaryTree", (rootGroup, allTokens, allGroups) => {
     let writeRoot = {};
@@ -107,7 +113,7 @@ Pulsar.registerFunction("generateStyleDictionaryTree", (rootGroup, allTokens, al
     // Add top level entries which don't belong to any user-defined group
     for (let token of tokensOfGroup(rootGroup, allTokens)) {
         result[safeTokenName(token)] = representToken(token, allTokens, allGroups);
-    }
+    }    
     // Retrieve
     return {
         [`${typeLabel(rootGroup.tokenType)}`]: result,
@@ -233,35 +239,14 @@ function representRadiusTokenValue(value, allTokens, allGroups) {
     else {
         // Raw value
         result = {
-            radius: {
-                type: "measure",
-                value: representMeasureTokenValue(value.radius, allTokens, allGroups),
-            },
-            topLeft: value.topLeft
-                ? {
-                    type: "measure",
-                    value: representMeasureTokenValue(value.topLeft, allTokens, allGroups),
-                }
-                : undefined,
-            topRight: value.topRight
-                ? {
-                    type: "measure",
-                    value: representMeasureTokenValue(value.topRight, allTokens, allGroups),
-                }
-                : undefined,
+            radius: representMeasureTokenValue(value.radius, allTokens, allGroups),
+            topLeft: value.topLeft ? representMeasureTokenValue(value.topLeft, allTokens, allGroups) : undefined,
+            topRight: value.topRight ? representMeasureTokenValue(value.topRight, allTokens, allGroups) : undefined,
             bottomLeft: value.bottomLeft
-                ? {
-                    type: "measure",
-                    value: representMeasureTokenValue(value.bottomLeft, allTokens, allGroups),
-                }
-                : undefined,
+              ? representMeasureTokenValue(value.bottomLeft, allTokens, allGroups) : undefined,
             bottomRight: value.bottomRight
-                ? {
-                    type: "measure",
-                    value: representMeasureTokenValue(value.bottomRight, allTokens, allGroups),
-                }
-                : undefined,
-        };
+              ? representMeasureTokenValue(value.bottomRight, allTokens, allGroups) : undefined,
+          };
     }
     return result;
 }

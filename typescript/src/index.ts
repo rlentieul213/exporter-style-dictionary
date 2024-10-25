@@ -6,6 +6,11 @@ Pulsar.registerFunction("objectToPrettyJson", (object: Object) => {
   return JSON.stringify(object, null, 2)
 })
 
+/** merge two trees */
+Pulsar.registerFunction("mergeTrees", (colorRootGroup: TokenGroup, measureRootGroup: TokenGroup, fontRootGroup: TokenGroup, borderRootGroup: TokenGroup, gradientRootGroup: TokenGroup, radiusRootGroup: TokenGroup, shadowRootGroup: TokenGroup, textRootGroup: TokenGroup, typoRootGroup: TokenGroup) => {
+  return Object.assign({}, colorRootGroup, measureRootGroup, fontRootGroup, borderRootGroup, gradientRootGroup, radiusRootGroup, shadowRootGroup, textRootGroup, typoRootGroup) 
+})
+
 /** Generate style dictionary tree */
 Pulsar.registerFunction("generateStyleDictionaryTree", (rootGroup: TokenGroup, allTokens: Array<Token>, allGroups: Array<TokenGroup>) => {
   let writeRoot = {}
@@ -29,9 +34,9 @@ Pulsar.registerFunction("generateStyleDictionaryTree", (rootGroup: TokenGroup, a
 /** Construct tree out of one specific group, independent of tree type */
 function representTree(rootGroup: TokenGroup, allTokens: Array<Token>, allGroups: Array<TokenGroup>, writeObject: Object): Object {
   // Represent one level of groups and tokens inside tree. Creates subobjects and then also information about each token
+  // Write buffer
+  let writeSubObject = {}
   for (let group of rootGroup.subgroups) {
-    // Write buffer
-    let writeSubObject = {}
 
     // Add each entry for each subgroup, and represent its tree into it
     writeObject[safeGroupName(group)] = representTree(group, allTokens, allGroups, writeSubObject)
@@ -159,34 +164,13 @@ function representRadiusTokenValue(value: RadiusTokenValue, allTokens: Array<Tok
   } else {
     // Raw value
     result = {
-      radius: {
-        type: "measure",
-        value: representMeasureTokenValue(value.radius, allTokens, allGroups),
-      },
-      topLeft: value.topLeft
-        ? {
-          type: "measure",
-          value: representMeasureTokenValue(value.topLeft, allTokens, allGroups),
-        }
-        : undefined,
-      topRight: value.topRight
-        ? {
-          type: "measure",
-          value: representMeasureTokenValue(value.topRight, allTokens, allGroups),
-        }
-        : undefined,
+      radius: representMeasureTokenValue(value.radius, allTokens, allGroups),
+      topLeft: value.topLeft ? representMeasureTokenValue(value.topLeft, allTokens, allGroups) : undefined,
+      topRight: value.topRight ? representMeasureTokenValue(value.topRight, allTokens, allGroups) : undefined,
       bottomLeft: value.bottomLeft
-        ? {
-          type: "measure",
-          value: representMeasureTokenValue(value.bottomLeft, allTokens, allGroups),
-        }
-        : undefined,
+        ? representMeasureTokenValue(value.bottomLeft, allTokens, allGroups) : undefined,
       bottomRight: value.bottomRight
-        ? {
-          type: "measure",
-          value: representMeasureTokenValue(value.bottomRight, allTokens, allGroups),
-        }
-        : undefined,
+        ? representMeasureTokenValue(value.bottomRight, allTokens, allGroups) : undefined,
     }
   }
   return result
