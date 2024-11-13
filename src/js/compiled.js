@@ -101,7 +101,6 @@ Pulsar.registerFunction("objectToPrettyJson", (object) => {
 });
 
 Pulsar.registerFunction("mergeTrees", (colorRootGroup, measureRootGroup, fontRootGroup, borderRootGroup, gradientRootGroup, radiusRootGroup, shadowRootGroup, textRootGroup, typoRootGroup) => {
-    console.log("mergeTrees: ");
     return Object.assign({}, colorRootGroup, measureRootGroup, fontRootGroup, borderRootGroup, gradientRootGroup, radiusRootGroup, shadowRootGroup, textRootGroup, typoRootGroup)
   })
 
@@ -225,10 +224,27 @@ function representColorTokenValue(value, allTokens, allGroups) {
     }
     else {
         // Raw value
-        result = `#${value.hex}`;
+        result = `${fixColorValue(value)}`;
     }
     return result;
 }
+
+function fixColorValue(value) {
+
+    let r = Math.max(0, Math.min(255, value.r));
+    let g = Math.max(0, Math.min(255, value.g));
+    let b = Math.max(0, Math.min(255, value.b));
+    let a = Math.max(0, Math.min(255, value.a));
+
+    // Convert each component to a two-digit hex value
+    const redHex = r.toString(16).padStart(2, '0');
+    const greenHex = g.toString(16).padStart(2, '0');
+    const blueHex = b.toString(16).padStart(2, '0');
+    const alphaHex = a.toString(16).padStart(2, '0');
+    
+    return `#${alphaHex}${redHex}${greenHex}${blueHex}`;
+}
+
 /** Represent radius token value either as reference or as plain representation */
 function representRadiusTokenValue(value, allTokens, allGroups) {
     let result;
